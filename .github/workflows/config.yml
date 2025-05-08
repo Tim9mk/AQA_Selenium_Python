@@ -1,13 +1,23 @@
 name: UI tests
 
-on: [push]
+on: workflow_dispatch
 
 jobs:
   ui-tests:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+
+      - name: Copy gh-pages repository to GitHub actions
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+          path: ./.github/gh-pages
+
+      - name: Copy history from gh-pages to allure-results
+        run: |
+          sudo mkdir -p allure-results/history # create folder for history
+          sudo cp -R ./.github/gh-pages/history/* allure-results/history
 
       - name: Run UI-tests via docker-compose
         env:
